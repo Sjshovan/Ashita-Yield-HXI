@@ -6,12 +6,12 @@
 
 > An Ashita v4 addon for HorizonXI that tracks gathering metrics and provides editable prices, alerts, reports, and in-game settings.
 
-<img src="https://i.postimg.cc/rsWfXXN8/yield-1-0-1.png..." data-canonical-src="https://i.postimg.cc/rsWfXXN8/yield-1-0-1.png" width="175" height="350" />
-<img src="https://i.postimg.cc/3RkL1Dy0/yield-1-0-2.png..." data-canonical-src="https://i.postimg.cc/3RkL1Dy0/yield-1-0-2.png" width="400" height="350" />
-<img src="https://i.postimg.cc/FKWW0xKQ/yield-1-0-3.png..." data-canonical-src="https://i.postimg.cc/FKWW0xKQ/yield-1-0-3.png" width="400" height="350" />
-<img src="https://i.postimg.cc/bJ4mBNbC/yield-1-0-4.png..." data-canonical-src="https://i.postimg.cc/bJ4mBNbC/yield-1-0-4.png" width="400" height="350" />
-<img src="https://i.postimg.cc/pVnGnzbg/yield-1-0-5.png..." data-canonical-src="https://i.postimg.cc/pVnGnzbg/yield-1-0-5.png" width="400" height="350" />
-<img src="https://i.postimg.cc/Fs5Pbzh1/yield-1-0-6.png..." data-canonical-src="https://i.postimg.cc/Fs5Pbzh1/yield-1-0-6.png" width="400" height="350" />  
+<img src="images/primary.png" width="175" height="350" alt="Yield HXI primary window" />
+<img src="images/general.png" width="400" height="350" alt="Yield HXI general settings" />
+<img src="images/set_prices.png" width="400" height="350" alt="Yield HXI price settings" />
+<img src="images/set_colors.png" width="400" height="350" alt="Yield HXI color settings" />
+<img src="images/set_alerts.png" width="400" height="350" alt="Yield HXI alert settings" />
+<img src="images/reports.png" width="400" height="350" alt="Yield HXI reports view" />  
 
 ### Table of Contents
 
@@ -124,14 +124,14 @@ Displays information about the Yield addon. Below are the equivalent ways of cal
 ___
 ### Support
 **Having Issues with this addon?**
-* Please report them here: [https://github.com/Sjshovan/Ashita-Yield/issues](https://github.com/Sjshovan/Ashita-Yield/issues).
+* Please report them here: [https://github.com/Sjshovan/Ashita-Yield-HXI/issues](https://github.com/Sjshovan/Ashita-Yield-HXI/issues).
   
 **Have something to say?**
 * Send feedback through the in-app Feedback page or email: <Sjshovan@Gmail.com>
 
 **Want to stay in the loop with my work?**
-* Repository: <https://github.com/Sjshovan/Ashita-Yield>
-* Discord: <https://discord.gg/3FbepVGh>
+* Repository: <https://github.com/Sjshovan/Ashita-Yield-HXI>
+* Discord: <https://discord.gg/jTXqGnNJ8r>
 
 **Wanna toss a coin to your modder?**
 * You can do so here: <https://www.Paypal.me/Sjshovan>
