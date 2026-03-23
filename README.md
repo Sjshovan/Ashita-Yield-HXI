@@ -6,6 +6,10 @@
 
 > An Ashita v4 addon for HorizonXI that tracks gathering metrics and provides editable prices, alerts, reports, and in-game settings.
 
+> Legacy project: the original Ashita v3 version of Yield is available at [Sjshovan/Ashita-Yield](https://github.com/Sjshovan/Ashita-Yield).
+> This repository is a port of that project specifically for the HorizonXI private server.
+> Compatibility with other servers running Ashita v4 is not guaranteed.
+
 <img src="images/primary.png" width="175" height="350" alt="Yield HXI primary window" />
 <img src="images/general.png" width="400" height="350" alt="Yield HXI general settings" />
 <img src="images/set_prices.png" width="400" height="350" alt="Yield HXI price settings" />
@@ -133,17 +137,28 @@ ___
 * Repository: <https://github.com/Sjshovan/Ashita-Yield-HXI>
 * Discord: <https://discord.gg/jTXqGnNJ8r>
 
-**Wanna toss a coin to your modder?**
+**Want to support development?**
 * You can do so here: <https://www.Paypal.me/Sjshovan>
 
 ___
 ### Change Log
 **v1.0.0** - 03/23/2026 (HorizonXI Edition)
-- Ported the addon to Ashita v4 for the current HorizonXI codebase.
-- Refreshed the settings, help, about, and feedback flows for the current UI.
-- Restored and cleaned the public command surface for the current release.
-- Updated NPC base pricing defaults from LandSandBoat item data.
-- Cleaned up internal helpers, naming, and documentation for a presentable `v1.0` release.
+- Revamped the UI across the main window, settings, help, and reports flows.
+- Added a second progress bar for tool cost tracking.
+- Added tool cost metrics and supporting settings.
+- Updated graph logic and metric presentation.
+- Added new metrics and colorized metric displays.
+- Added checkbox-based selection controls to Set Colors and Set Alerts.
+- Added new alert types.
+- Added a draggable read window to Reports.
+- Added a Recalculate Value button to Set Prices.
+- Added price order priority logic in Set Prices: `AH Stack -> AH Single -> NPC Single`.
+- Added tooltips across the app.
+- Added the window scaling slider and revamped scaling behavior.
+- Synced NPC base pricing defaults from LandSandBoat item data.
+- Fixed yield tracking issues across all gathering types.
+- Fixed cases where yields were not counted correctly during skill-up or break events.
+- Fixed inventory count handling.
 
 ___
 ### Known Issues
