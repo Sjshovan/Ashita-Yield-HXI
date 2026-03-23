@@ -2019,7 +2019,7 @@ function loadUiVariables()
     -- Report read-pane text scale (UI-only; not persisted).
     local reportScale = tonumber(imgui.GetVarValue(uiVariables["var_ReportFontScale"])) or 1.0;
     if reportScale < 1.0 then reportScale = 1.0; end
-    if reportScale > 1.5 then reportScale = 1.5; end
+    if reportScale > 2.0 then reportScale = 2.0; end
     imgui.SetVarValue(uiVariables["var_ReportFontScale"], reportScale);
 
     for gathering, defs in pairs(eventAlertDefs) do
@@ -2757,7 +2757,7 @@ end
 -- desc: Send an issue or feedback to github issues.
 ----------------------------------------------------------------------------------------------------
 function sendIssue(title, body)
-    local issuesBaseUrl = "https://github.com/Sjshovan/Ashita-Yield/issues/new";
+    local issuesBaseUrl = "https://github.com/Sjshovan/Ashita-Yield-HXI/issues/new";
 
     local function urlEncode(s)
         local text = tostring(s or "");
@@ -2842,20 +2842,10 @@ end
 
 ----------------------------------------------------------------------------------------------------
 -- func: writeDebugLog
--- desc: Write debug output to file for troubleshooting.
+-- desc: Retained as a no-op compatibility hook.
 ----------------------------------------------------------------------------------------------------
 function writeDebugLog(message)
-    local logDir = string.format('%slogs\\', _addon.path);
-    if not ashita.fs.exists(logDir) then
-        ashita.fs.create_dir(logDir);
-    end
-
-    local logFile = string.format('%syield_debug.log', logDir);
-    local file = io.open(logFile, 'a+');
-    if file ~= nil then
-        file:write(string.format('[%s] %s\n', os.date('%Y-%m-%d %H:%M:%S'), tostring(message)));
-        file:close();
-    end
+    return;
 end
 
 ----------------------------------------------------------------------------------------------------
@@ -2868,7 +2858,7 @@ function trySaveSettings(context, suppressChat)
         writeDebugLog(string.format('ERROR saveSettings (%s): %s', context or 'unknown', tostring(err)));
         writeDebugLog(debug.traceback());
         if not suppressChat then
-            displayResponse('Yield: Failed to save settings. See logs\\yield_debug.log for details.', "\31\167%s");
+            displayResponse('Yield: Failed to save settings.', "\31\167%s");
         end
     end
     return ok;
@@ -7629,6 +7619,7 @@ function renderSettingsReports()
     pushSettingsPageMenuBarSizing();
     if imgui.BeginChild("Reports", { -1, state.window.heightSettingsContent }, imgui.GetVarValue(uiVariables['var_WindowVisible']), bit.bor(ImGuiWindowFlags.MenuBar, ImGuiWindowFlags.NoResize)) then
         logScaleSnapshot("settings_reports_begin", "");
+        setWindowFontScale(state.window.textScale);
         local gatherBtnBoost = 1.18;
         local btnAction = function(data)
             runSafe(string.format('reports_btnAction_%s', tostring(data and data.name)), function()
@@ -7820,17 +7811,17 @@ function renderSettingsReports()
         local sliderStartX = imgui.GetCursorPosX();
         local sliderDisabled = imguiPushDisabled(not readingActive);
         imgui.PushItemWidth(state.window.widthReportScale);
-        if imgui.SliderFloat("##reports_font_scale", uiVariables["var_ReportFontScale"], 1.0, 1.5, "%.2f") then
+        if imgui.SliderFloat("##reports_font_scale", uiVariables["var_ReportFontScale"], 1.0, 2.0, "%.2f") then
             local reportScale = tonumber(imgui.GetVarValue(uiVariables["var_ReportFontScale"])) or 1.0;
             if reportScale < 1.0 then reportScale = 1.0; end
-            if reportScale > 1.5 then reportScale = 1.5; end
+            if reportScale > 2.0 then reportScale = 2.0; end
             imgui.SetVarValue(uiVariables["var_ReportFontScale"], reportScale);
         end
         imgui.PopItemWidth();
         imguiPopDisabled(sliderDisabled);
         local sliderEndX = sliderStartX + (tonumber(state.window.widthReportScale) or 0.0);
         if imgui.IsItemHovered() then
-            imgui.SetTooltip("Adjust the text size used in the report reader.");
+            imgui.SetTooltip("Adjust report text size relative to the surrounding Reports text.");
         end
 
         local selectedCount = 0;
@@ -7910,13 +7901,12 @@ function renderSettingsReports()
             logScaleSnapshot("settings_reports_read", "");
             local reportScale = tonumber(imgui.GetVarValue(uiVariables["var_ReportFontScale"])) or 1.0;
             if reportScale < 1.0 then reportScale = 1.0; end
-            if reportScale > 1.5 then reportScale = 1.5; end
+            if reportScale > 2.0 then reportScale = 2.0; end
             local baseTextScale = tonumber(state.window.textScale) or 1.0;
             if baseTextScale < 0.25 then baseTextScale = 1.0; end
-            -- Keep the report reader close to the standard Settings body text size at 1.0x,
-            -- while still leaving a little room for its denser text blocks.
-            local calibratedBase = baseTextScale * 0.86;
-            setWindowFontScale(calibratedBase * reportScale);
+            -- This child already inherits the Reports page text scale, so only apply
+            -- the slider multiplier here. Reapplying baseTextScale doubles the result.
+            setWindowFontScale(reportScale);
             imgui.PushTextWrapPos(getAvailX(imgui.GetContentRegionAvail()));
             local fname = state.values.currentReportName;
             if fname ~= nil then
@@ -7942,7 +7932,7 @@ function renderSettingsReports()
             elseif getPlayerName() == "" then
                 imgui.TextColored({ 1, 0.615, 0.615, 1 }, string.format("Unable to manage reports with no character loaded."));
             end
-            setWindowFontScale(baseTextScale);
+            state.window.currentTextScale = baseTextScale;
             imgui.EndChild()
         end
         imgui.PopStyleColor();
@@ -7988,7 +7978,7 @@ function renderSettingsFeedback()
         local gapY = math.max(6.0, (tonumber(state.window.scale) or 1.0) * 4.0);
         local currentY = imgui.GetCursorPosY();
         local introText = "If you have discovered a problem or want to provide feedback, this will open a pre-filled GitHub issue.";
-        local footerText = "* To: https://github.com/Sjshovan/Ashita-Yield/issues";
+        local footerText = "* To: https://github.com/Sjshovan/Ashita-Yield-HXI/issues";
         local charWidthPx = math.max(1.0, (tonumber(imgui.GetFontSize()) or lineHeight or 12.0) * 0.55);
         local msgLines = estimateWrappedLineCount(msg, panelWidth, charWidthPx);
         local introLines = estimateWrappedLineCount(introText, panelWidth, charWidthPx);
@@ -8151,7 +8141,7 @@ function renderSettingsAbout()
         imgui.TextColored({ 1, 1, 0.54, 1 }, "Repository:");
         imgui.SetCursorPosX(panelX);
         imgui.PushTextWrapPos(panelRight);
-        imgui.Text("https://github.com/Sjshovan/Ashita-Yield");
+        imgui.Text("https://github.com/Sjshovan/Ashita-Yield-HXI");
         imgui.PopTextWrapPos();
 
         imgui.Spacing();
@@ -8183,15 +8173,15 @@ function renderSettingsAbout()
         local compactActions = actionRowW > panelWidth;
         imgui.SetCursorPosX(panelX);
         if uiButton("Open Issues") then
-            ashita.misc.open_url("https://github.com/Sjshovan/Ashita-Yield/issues");
+            ashita.misc.open_url("https://github.com/Sjshovan/Ashita-Yield-HXI/issues");
         end
         if not compactActions then imgui.SameLine(0.0, btnGap); else imgui.SetCursorPosX(panelX); end
         if uiButton("Open Repo") then
-            ashita.misc.open_url("https://github.com/Sjshovan/Ashita-Yield");
+            ashita.misc.open_url("https://github.com/Sjshovan/Ashita-Yield-HXI");
         end
         if not compactActions then imgui.SameLine(0.0, btnGap); else imgui.SetCursorPosX(panelX); end
         if uiButton("Open Discord") then
-            ashita.misc.open_url("https://discord.gg/3FbepVGh");
+            ashita.misc.open_url("https://discord.gg/jTXqGnNJ8r");
         end
 
         imgui.Spacing();
